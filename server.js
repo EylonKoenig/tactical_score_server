@@ -8,7 +8,7 @@ const app = express();
 
 
 connectDB();
-app.use(cors({ credentials: true, origin: ['http://localhost:3000']}));
+app.use(cors({ credentials: true, origin: ['http://localhost:3000','https://tacticalops.netlify.app']}));
 app.use(express.static('public'));
 app.use(logger('dev'));
 app.use(express.json());
