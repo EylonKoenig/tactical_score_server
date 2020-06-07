@@ -40,7 +40,7 @@ router.get('/all', async(req, res) => {
         players = ("wewe",JSON.stringify(players, null, '\t'));
         players = JSON.parse(players);
         players.forEach((player) => {
-            player["kdRatio"] =  player.death ? player.kill / player.death+"%" : "0%";
+            player["kdRatio"] =  player.death ? (player.kill / player.death).toFixed(3) : "0";
             player["winLoseRatio"] =  player.wonGames + player.lostGames ?
                 Math.floor(player.wonGames / (player.wonGames + player.lostGames)*100)+"%" :  "0%";
         });
@@ -55,8 +55,8 @@ router.get('/all', async(req, res) => {
 router.get('/best', async(req, res) => {
     try {
         let data = {};
-        const mostGameWon =await User.find().sort({age:-1}).limit(1)
-        const MostKills = await User.find().sort({kill:-1}).limit(1)
+        const mostGameWon =await User.find().sort({age:-1}).limit(1);
+        const MostKills = await User.find().sort({kill:-1}).limit(1);
         let players = await User.find({});
         const bestKD = players.reduce(function(prev, current) {
             return (findBestWinRte(prev) > findBestWinRte(current)) ? prev : current
@@ -64,7 +64,6 @@ router.get('/best', async(req, res) => {
         const mostGamePlayer = players.reduce(function(prev, current) {
             return (mostGame(prev) > mostGame(current)) ? prev : current
         });
-        console.log(bestKD);
         data["most-games-won"] = mostGameWon[0];
         data["most-kils"] =MostKills[0] ;
         data["best-kd"] = bestKD;
