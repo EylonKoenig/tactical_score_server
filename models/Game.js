@@ -25,6 +25,10 @@ const GameSchema = new mongoose.Schema({
         type: Array,
         required: false
     },
+    gameScore: {
+        type: Object,
+        default: []
+    },
     date: {
         type: Date,
         default: Date.now()

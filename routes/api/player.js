@@ -40,7 +40,7 @@ router.get('/all', async(req, res) => {
         players = ("json",JSON.stringify(players, null, '\t'));
         players = JSON.parse(players);
         players.forEach((player) => {
-            player["kdRatio"] =  player.death ? (player.kill / player.death).toFixed(3) : "0";
+            player["kdRatio"] =  findKDRate(player);
             player["winLoseRatio"] =  player.wonGames + player.lostGames ?
                 Math.floor(player.wonGames / (player.wonGames + player.lostGames)*100)+"%" :  "0%";
         });
@@ -60,7 +60,7 @@ router.get('/best', async(req, res) => {
         const MostKills = await User.find().sort({kill:-1}).limit(1);
         let players = await User.find({});
         const bestKD = players.reduce(function(prev, current) {
-            return (findBestkillRate(prev) > findBestkillRate(current)) ? prev : current
+            return (findKDRate(prev) > findKDRate(current)) ? prev : current
         });
         const mostGamePlayer = players.reduce(function(prev, current) {
             return (mostGame(prev) > mostGame(current)) ? prev : current
@@ -77,16 +77,21 @@ router.get('/best', async(req, res) => {
 
 });
 
-const findBestkillRate = function(obj){
-    return obj.death ?  obj.kill/obj.death : 0;
+const findKDRate = function(player){
+    if (!player.kill) return 0;
+    else if(!player.death) return player.kill;
+    else return (player.kill / player.death).toFixed(3);
+
 };
 
-const findBestWinRate = function(obj){
-    return obj.lostGames ?  obj.wonGames/obj.lostGames : 0;
+const findBestWinRate = function(player){
+    if (!player.wonGames)return 0;
+        else if(!player.lostGames) return 100;
+    return player.wonGames / (player.wonGames + player.lostGames)*100;
 };
 
-const mostGame = function(obj){
-    return obj.lostGames+obj.wonGames
+const mostGame = function(player){
+    return player.lostGames+player.wonGames
 };
 
 module.exports = router;

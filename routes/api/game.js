@@ -62,7 +62,9 @@ router.get('/all', async(req, res) => {
 router.post('/playerscore',  async function (req, res, next) {
     const {playersData} = req.body;
     let playerScore = new Map(JSON.parse(playersData));
+    let gameScoreData = [];
     try {
+        const gameData = await Game.findOne({"_id":req.query.gameid});
         for (let [player, score] of playerScore){
             const playerName = player.slice(6);
             const playerData =await Player.findOne({"name":playerName});
@@ -70,9 +72,12 @@ router.post('/playerscore',  async function (req, res, next) {
             let totalDeath = playerData.death + score.death;
             playerData.kill = totalKill;
             playerData.death = totalDeath;
-            await playerData.save()
+            await playerData.save();
 
+            gameScoreData.push({playerName:playerName, kill:score.kill, death: score.death})
         }
+        gameData.gameScore = gameScoreData;
+        await gameData.save();
         res.status(200).send('Success')
     } catch (error) {
         console.error(error.message);
