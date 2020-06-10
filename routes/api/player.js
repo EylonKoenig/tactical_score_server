@@ -56,7 +56,7 @@ router.get('/all', async(req, res) => {
 router.get('/best', async(req, res) => {
     try {
         let data = {};
-        const mostGameWon =await User.find().sort({age:-1}).limit(1);
+        const mostGameWon =await User.find().sort({wonGames:-1}).limit(1);
         const MostKills = await User.find().sort({kill:-1}).limit(1);
         let players = await User.find({});
         const bestKD = players.reduce(function(prev, current) {
