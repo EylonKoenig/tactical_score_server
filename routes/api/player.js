@@ -84,10 +84,14 @@ const findKDRate = function(player){
 
 };
 
+// const findBestWinRate = function(player){
+//     if (!player.wonGames)return 0;
+//     else if(!player.lostGames) return 100;
+//     return player.wonGames / (player.wonGames + player.lostGames)*100;
+// };
 const findBestWinRate = function(player){
-    if (!player.wonGames)return 0;
-        else if(!player.lostGames) return 100;
-    return player.wonGames / (player.wonGames + player.lostGames)*100;
+    if(!player.wonGames && !player.lostGames) return -100;
+    return player.wonGames - player.lostGames
 };
 
 const mostGame = function(player){
